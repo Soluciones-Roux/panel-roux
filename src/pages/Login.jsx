@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { LockOutlined } from "@mui/icons-material";
 import { authStore } from "../components/models/authStore";
+import { alertStore } from "../components/models/useAlertStore";
 
 const Login = () => {
   const [user, setUser] = React.useState({});
@@ -31,6 +32,15 @@ const Login = () => {
 
     const reuslt = await authStore.login(user);
     console.log(reuslt);
+
+    if (reuslt.success === false) {
+      alertStore.error(reuslt.message || "Error en el inicio de sesión");
+    } else {
+      alertStore.success("Inicio de sesión exitoso");
+      // Redirigir o actualizar la UI según sea necesario
+      window.location.href = "/"; // Ejemplo de redirección a la página principal
+    }
+
     setLoading(false);
   };
 

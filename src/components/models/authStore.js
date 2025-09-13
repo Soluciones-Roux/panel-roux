@@ -1,6 +1,8 @@
 // authStore.js
 import { makeAutoObservable } from "mobx";
 import { loginService } from "../services/AuthServices";
+
+// Pendiente agregar Refresh Token y manejo de expiración automática
 class AuthStore {
   user = {
     name: "Carlos Rodríguez",
@@ -107,7 +109,7 @@ class AuthStore {
     }
   }
 
-  async logout() {
+  logout = () => {
     try {
       // 1. Llamar al endpoint de logout en el backend (si existe)
       // await api.post("/auth/logout");
@@ -121,7 +123,7 @@ class AuthStore {
       // 3. Redirigir al login
       window.location.href = "/login";
     }
-  }
+  };
 
   get token() {
     // Verificar si el token existe y no ha expirado

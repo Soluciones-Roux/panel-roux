@@ -9,12 +9,15 @@ import { StoreProvider } from "./components/models/rootStore";
 import { ProtectedRoute, Layout, ThemeProvider } from "./components/core";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import AlertContainer from "./components/core/Alerts/AlertContainer";
 
 function App() {
   return (
     <ThemeProvider>
       <StoreProvider>
         <Router>
+          <AlertContainer />
+
           <Routes>
             <Route
               path="/"
