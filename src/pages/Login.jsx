@@ -11,8 +11,8 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { LockOutlined } from "@mui/icons-material";
-import { authStore } from "../components/models/authStore";
-import { alertStore } from "../components/models/useAlertStore";
+import { authStore } from "../components/store/authStore";
+import { alertStore } from "../components/store/useAlertStore";
 
 const Login = () => {
   const [user, setUser] = React.useState({});

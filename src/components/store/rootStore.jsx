@@ -1,9 +1,10 @@
 import React from "react";
 import { useLocalStore } from "mobx-react";
-import { userStore } from "./userStore";
+import { authStore } from "./authStore";
+import { alertStore } from "./useAlertStore";
 
 export function createRootStore() {
-  return { userStore };
+  return { authStore, alertStore };
 }
 
 const storeContext = React.createContext(new createRootStore());

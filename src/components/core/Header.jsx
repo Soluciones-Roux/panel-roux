@@ -27,14 +27,13 @@ import {
   Settings as SettingsIcon,
   Person as PersonIcon,
 } from "@mui/icons-material";
-// import { useAuthStore } from "../../stores/useAuthStore";
 import { useNavigate } from "react-router-dom";
-import { authStore } from "../models/authStore";
+import { authStore } from "../store/authStore";
 
 const Header = ({ onMenuToggle }) => {
+  const { user, logout } = authStore;
   const [anchorEl, setAnchorEl] = useState(null);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
-  const { user, logout } = authStore;
   const navigate = useNavigate();
 
   const handleProfileMenuOpen = (event) => {
@@ -104,7 +103,7 @@ const Header = ({ onMenuToggle }) => {
             }}
             color={"secondary.main"}
           >
-            Distribuciones Modernas
+            {user.name_company}
           </Typography>
 
           <Box sx={{ flexGrow: 1 }} />
@@ -135,7 +134,7 @@ const Header = ({ onMenuToggle }) => {
                   fontSize: "1rem",
                 }}
               >
-                {user?.name?.charAt(0) || "U"}
+                {user?.username?.charAt(0) || "U"}
               </Avatar>
             </IconButton>
           </Tooltip>

@@ -5,11 +5,11 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { StoreProvider } from "./components/models/rootStore";
 import { ProtectedRoute, Layout, ThemeProvider } from "./components/core";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import AlertContainer from "./components/core/Alerts/AlertContainer";
+import { StoreProvider } from "./components/store/rootStore";
 
 function App() {
   return (

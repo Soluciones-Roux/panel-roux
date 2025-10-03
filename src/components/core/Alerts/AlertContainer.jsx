@@ -3,7 +3,7 @@ import React from "react";
 import { Box } from "@mui/material";
 import { observer } from "mobx-react-lite"; // ¡IMPORTANTE!
 import Alert from "./Alert";
-import { alertStore } from "../../models/useAlertStore";
+import { alertStore } from "../../store/useAlertStore";
 
 const AlertContainer = observer(() => {
   // ¡Wrapper observer!

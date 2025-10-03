@@ -1,7 +1,7 @@
 // components/ProtectedRoute.jsx
 import { useEffect } from "react";
 import { Navigate } from "react-router-dom";
-import { authStore } from "../models/authStore";
+import { authStore } from "../store/authStore";
 
 const ProtectedRoute = ({ children }) => {
   const token = authStore.jwt.token;
