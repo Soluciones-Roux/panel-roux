@@ -10,13 +10,15 @@ export function useAuth() {
     const expires = moment(jwt.expires); // fecha de expiración del token
     const isValid = expires.isAfter(now); // true si el token sigue vigente
 
+    console.log(isValid);
+
     if (!jwt.token || !isValid) {
       authStore.clear();
-      window.location.href = "/login";
+      // window.location.href = "/login";
     }
-  }, [jwt]);
+  }, [user]);
 
-  return { user };
+  return { user, token: jwt.token };
 }
 
 export default useAuth;

@@ -10,7 +10,6 @@ import {
   ListItem,
   ListItemText,
   ListItemAvatar,
-  Chip,
   LinearProgress,
 } from "@mui/material";
 import {
@@ -20,6 +19,7 @@ import {
   OnlinePrediction as OnlineIcon,
   Pending as PendingIcon,
 } from "@mui/icons-material";
+import OrdersListCore from "../core/Orders/OrdersListCore";
 
 const HomeView = ({
   userName,
@@ -27,7 +27,8 @@ const HomeView = ({
   stats,
   vendedoresOnline,
   estadosPedidos,
-  pedidosRecientes,
+  pedidosEstandar,
+  pedidosExpress,
 }) => {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -199,60 +200,27 @@ const HomeView = ({
               </CardContent>
             </Card>
           </Grid>
-          {/* Tarjeta de pedidos recientes */}
-          <Grid item xs={12} md={12}>
-            <Card elevation={2}>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  Lista de pedidos
-                </Typography>
 
-                <List>
-                  {pedidosRecientes.map((pedido) => (
-                    <ListItem key={pedido.id} divider>
-                      <ListItemAvatar>
-                        <Avatar sx={{ bgcolor: "secondary.main" }}>
-                          <AssignmentIcon />
-                        </Avatar>
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary={
-                          <Typography>
-                            <strong>#{pedido.id}</strong> - {pedido.cliente}
-                          </Typography>
-                        }
-                        secondary={
-                          <Box
-                            sx={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              flexWrap: "wrap",
-                            }}
-                          >
-                            <Typography variant="body2">
-                              ${pedido.monto.toLocaleString()} • {pedido.fecha}
-                            </Typography>
-                            <Chip
-                              label={pedido.estado}
-                              size="small"
-                              color={
-                                pedido.estado === "Facturado"
-                                  ? "success"
-                                  : pedido.estado === "Pendiente"
-                                  ? "warning"
-                                  : pedido.estado === "En camino"
-                                  ? "info"
-                                  : "error"
-                              }
-                            />
-                          </Box>
-                        }
-                      />
-                    </ListItem>
-                  ))}
-                </List>
-              </CardContent>
-            </Card>
+          {/* Estandar, pulir bien luego */}
+          {/* <Grid item xs={12} md={12}>
+            <OrdersListCore
+              title="Lista de pedidos Estándar"
+              orders={pedidosEstandar}
+              color="secondary"
+              showTotalKey="monto"
+            />
+          </Grid> */}
+
+          {/* Express, para mvp */}
+
+          <Grid item xs={12} md={12}>
+            <OrdersListCore
+              title="Lista de pedidos Express"
+              orders={pedidosExpress}
+              color="info"
+              showTotalKey="total"
+              isExpress={true}
+            />
           </Grid>
         </Grid>
       </Grid>

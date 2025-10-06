@@ -10,8 +10,11 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import AlertContainer from "./components/core/Alerts/AlertContainer";
 import { StoreProvider } from "./components/store/rootStore";
+import useAuth from "./components/hooks/useAuth";
 
 function App() {
+  const { user } = useAuth();
+
   return (
     <ThemeProvider>
       <StoreProvider>

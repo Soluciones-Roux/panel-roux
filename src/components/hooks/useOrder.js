@@ -1,16 +1,27 @@
 import { useEffect, useState } from "react";
-import { Alert } from "react-native";
 import { orderStore } from "../store/orderStore";
+import useAuth from "./useAuth";
 
-export const useOrders = (token, navigation) => {
+export const useOrders = (navigation) => {
+  const { token, user } = useAuth();
+
   const [cliente, setCliente] = useState("");
   const [search, setSearch] = useState("");
   const [items, setItems] = useState([]); // [{id, name, price, qty}]
 
-  const { myOrders, getMyOrders, generalTotal } = orderStore;
+  const {
+    myOrders,
+    myOrderExpress,
+    getMyOrders,
+    getMyOrdersExpress,
+    generalTotal,
+    ordersPending,
+    ordersCompleted,
+  } = orderStore;
 
   useEffect(() => {
     getMyOrders(token);
+    getMyOrdersExpress(token);
   }, []);
 
   const addProduct = (product) => {
@@ -37,11 +48,11 @@ export const useOrders = (token, navigation) => {
 
   const handleCrearPedido = async () => {
     if (!cliente.name.trim()) {
-      Alert.alert("Error", "Debes ingresar un cliente");
+      alert("Error", "Debes ingresar un cliente");
       return;
     }
     if (items.length === 0) {
-      Alert.alert("Error", "Debes agregar al menos un producto");
+      alert("Error", "Debes agregar al menos un producto");
       return;
     }
 
@@ -65,8 +76,12 @@ export const useOrders = (token, navigation) => {
     //if result if bad, create local.
 
     console.log("Pedido creado:", pedido);
-    Alert.alert("Éxito", "Pedido creado correctamente");
+    alert("Éxito", "Pedido creado correctamente");
     navigation.goBack();
+  };
+
+  const handleCrearPedidoExpress = async (pedidoExpress) => {
+    await orderStore.createOrderExpress(token, pedidoExpress);
   };
 
   return {
@@ -80,7 +95,11 @@ export const useOrders = (token, navigation) => {
     setSearch,
     total,
     myOrders,
+    myOrderExpress,
     getMyOrders,
     generalTotal,
+    ordersPending,
+    ordersCompleted,
+    handleCrearPedidoExpress,
   };
 };

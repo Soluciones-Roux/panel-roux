@@ -5,11 +5,22 @@ import {
 import { observer } from "mobx-react";
 import HomeView from "../view/HomeView";
 import useAuth from "../hooks/useAuth";
+import { useOrders } from "../hooks/useOrder";
+import moment from "moment";
+import { cloneDeep } from "lodash";
 
 const HomeViewModel = observer(() => {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
 
   //load orders
+  const {
+    myOrders,
+    generalTotal,
+    ordersPending,
+    ordersCompleted,
+    myOrderExpress,
+  } = useOrders(token);
+
   //load coords (sí vendedor tiene coord de hoy, cuenta cómo online)
   //load users
   //crar lógica vistas de vendedores
@@ -19,12 +30,12 @@ const HomeViewModel = observer(() => {
 
   // Estadísticas principales
   const stats = {
-    totalVendidoHoy: 12540.75,
+    totalVendidoHoy: generalTotal,
     vendedoresOnline: 8,
     totalVendedores: 15,
-    pedidosHoy: 23,
-    pedidosPendientes: 7,
-    pedidosFacturados: 16,
+    pedidosHoy: myOrders?.length + myOrderExpress?.length || 0,
+    pedidosPendientes: ordersPending,
+    pedidosFacturados: ordersCompleted,
   };
 
   // Estados de pedidos
@@ -59,37 +70,62 @@ const HomeViewModel = observer(() => {
     // },
   ];
 
+  const pedidosEstandar = myOrders.map((order) => {
+    return {
+      id: order.id,
+      cliente: order.customer_name,
+      productos: order.items,
+      monto: order.total,
+      estado: order.status_name,
+      fecha: moment(order.created_at).format("YYYY-MM-DD HH:mm"),
+    };
+  });
+
+  const pedidosExpress = myOrderExpress.map((order) => {
+    return {
+      id: order.id,
+      cliente: order.client_info,
+      detalle_orden: order.order_details,
+      total: order.total,
+      estado: order.status_name,
+      fecha: moment(order.created_at).format("YYYY-MM-DD HH:mm"),
+      facturadoPor: order.completed_by_name,
+      fechaFacturado: order.completed_at,
+      facturaReferencia: order.bill_references,
+    };
+  });
+
   // Pedidos recientes
-  const pedidosRecientes = [
-    {
-      id: 1001,
-      cliente: "Supermercado Central",
-      monto: 1250.5,
-      estado: "Facturado",
-      fecha: "10:30 AM",
-    },
-    {
-      id: 1002,
-      cliente: "Tienda Don José",
-      monto: 845.25,
-      estado: "Pendiente",
-      fecha: "11:15 AM",
-    },
-    // {
-    //   id: 1003,
-    //   cliente: "Minimarket La Esquina",
-    //   monto: 1560.0,
-    //   estado: "En camino",
-    //   fecha: "9:45 AM",
-    // },
-    {
-      id: 1004,
-      cliente: "Abastos Hernández",
-      monto: 920.3,
-      estado: "Facturado",
-      fecha: "8:20 AM",
-    },
-  ];
+  // const pedidosEstandar = [
+  //   {
+  //     id: 1001,
+  //     cliente: "Supermercado Central",
+  //     monto: 1250.5,
+  //     estado: "Facturado",
+  //     fecha: "10:30 AM",
+  //   },
+  //   {
+  //     id: 1002,
+  //     cliente: "Tienda Don José",
+  //     monto: 845.25,
+  //     estado: "Pendiente",
+  //     fecha: "11:15 AM",
+  //   },
+  //   // {
+  //   //   id: 1003,
+  //   //   cliente: "Minimarket La Esquina",
+  //   //   monto: 1560.0,
+  //   //   estado: "En camino",
+  //   //   fecha: "9:45 AM",
+  //   // },
+  //   {
+  //     id: 1004,
+  //     cliente: "Abastos Hernández",
+  //     monto: 920.3,
+  //     estado: "Facturado",
+  //     fecha: "8:20 AM",
+  //   },
+  // ];
 
   // Vendedores en línea
   const vendedoresOnline = [
@@ -106,7 +142,8 @@ const HomeViewModel = observer(() => {
       stats={stats}
       vendedoresOnline={vendedoresOnline}
       estadosPedidos={estadosPedidos}
-      pedidosRecientes={pedidosRecientes}
+      pedidosEstandar={pedidosEstandar}
+      pedidosExpress={pedidosExpress}
     />
   );
 });

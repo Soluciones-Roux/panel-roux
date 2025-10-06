@@ -31,7 +31,6 @@ const Login = () => {
     console.log("Enviando datos de inicio de sesión:", user);
 
     const reuslt = await authStore.login(user);
-    console.log(reuslt);
 
     if (reuslt.success === false) {
       alertStore.error(reuslt.message || "Error en el inicio de sesión");
