@@ -1,29 +1,26 @@
-import { useEffect, useState } from "react";
-import { orderStore } from "../store/orderStore";
+import { useState } from "react";
 import useAuth from "./useAuth";
+import { orderStandardStore } from "../store/OrderStandardStore";
 
-export const useOrders = (navigation) => {
-  const { token, user } = useAuth();
+export const useOrderStandar = (navigation) => {
+  const { token } = useAuth();
 
   const [cliente, setCliente] = useState("");
   const [search, setSearch] = useState("");
-  const [items, setItems] = useState([]); // [{id, name, price, qty}]
+  const [items, setItems] = useState([]);
 
   const {
-    myOrders,
-    myOrderExpress,
-    getMyOrders,
-    getMyOrdersExpress,
-    generalTotal,
-    ordersPending,
-    ordersCompleted,
-  } = orderStore;
+    myOrderStandar,
+    getMyOrderStandar,
+    createOrder,
+    orderStandarTotal,
+    pendingStandar,
+    completedStandar,
+  } = orderStandardStore;
 
-  useEffect(() => {
-    getMyOrders(token);
-    getMyOrdersExpress(token);
-  }, []);
-
+  // ==========================
+  //   PRODUCT MANAGEMENT
+  // ==========================
   const addProduct = (product) => {
     const exists = items.find((i) => i.id === product.id);
     if (exists) {
@@ -33,7 +30,7 @@ export const useOrders = (navigation) => {
     } else {
       setItems([...items, { ...product, qty: 1 }]);
     }
-    setSearch(""); // limpiar búsqueda
+    setSearch("");
   };
 
   const changeQty = (id, qty) => {
@@ -46,8 +43,11 @@ export const useOrders = (navigation) => {
 
   const total = items.reduce((sum, i) => sum + i.price * i.qty, 0);
 
+  // ==========================
+  //   CREATE ORDER
+  // ==========================
   const handleCrearPedido = async () => {
-    if (!cliente.name.trim()) {
+    if (!cliente.name?.trim()) {
       alert("Error", "Debes ingresar un cliente");
       return;
     }
@@ -68,38 +68,30 @@ export const useOrders = (navigation) => {
       fecha: new Date().toISOString(),
     };
 
-    //lógica creación.
-    //backend, query transation, create order, insert items orders
-    // return ok - salta alertar pedido creado con éxito
+    const result = await createOrder(token, pedido);
+    if (!result) {
+      alert("Error", "No se pudo crear el pedido");
+      return;
+    }
 
-    const result = await orderStore.createOrder(token, pedido);
-    //if result if bad, create local.
-
-    console.log("Pedido creado:", pedido);
     alert("Éxito", "Pedido creado correctamente");
     navigation.goBack();
-  };
-
-  const handleCrearPedidoExpress = async (pedidoExpress) => {
-    await orderStore.createOrderExpress(token, pedidoExpress);
   };
 
   return {
     addProduct,
     changeQty,
     cliente,
-    handleCrearPedido,
-    items,
-    search,
     setCliente,
+    search,
     setSearch,
+    items,
+    orderStandarTotal,
+    handleCrearPedido,
+    myOrderStandar,
+    getMyOrderStandar,
     total,
-    myOrders,
-    myOrderExpress,
-    getMyOrders,
-    generalTotal,
-    ordersPending,
-    ordersCompleted,
-    handleCrearPedidoExpress,
+    pendingStandar,
+    completedStandar,
   };
 };

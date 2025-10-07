@@ -5,21 +5,32 @@ import {
 import { observer } from "mobx-react";
 import HomeView from "../view/HomeView";
 import useAuth from "../hooks/useAuth";
-import { useOrders } from "../hooks/useOrder";
+import { useOrderStandar } from "../hooks/useOrder";
 import moment from "moment";
-import { cloneDeep } from "lodash";
+import { useEffect } from "react";
+import { useOrdersExpress } from "../hooks/useOrderExpress";
 
 const HomeViewModel = observer(() => {
   const { user, token } = useAuth();
 
   //load orders
   const {
-    myOrders,
-    generalTotal,
-    ordersPending,
-    ordersCompleted,
-    myOrderExpress,
-  } = useOrders(token);
+    myOrderStandar,
+    getMyOrderStandar,
+    orderStandarTotal,
+    pendingStandar,
+    completedStandar,
+  } = useOrderStandar(token);
+
+  const {
+    myOrdersExpress,
+    getMyOrdersExpress,
+    pendingExpress,
+    completedExpress,
+    orderExpressTotal,
+  } = useOrdersExpress();
+
+  console.log(orderStandarTotal, orderExpressTotal);
 
   //load coords (sí vendedor tiene coord de hoy, cuenta cómo online)
   //load users
@@ -30,20 +41,20 @@ const HomeViewModel = observer(() => {
 
   // Estadísticas principales
   const stats = {
-    totalVendidoHoy: generalTotal,
+    totalVendidoHoy: orderStandarTotal + orderExpressTotal,
     vendedoresOnline: 8,
     totalVendedores: 15,
-    pedidosHoy: myOrders?.length + myOrderExpress?.length || 0,
-    pedidosPendientes: ordersPending,
-    pedidosFacturados: ordersCompleted,
+    pedidosHoy: myOrderStandar?.length + myOrdersExpress?.length || 0,
+    pedidosPendientes: pendingStandar + pendingExpress,
+    pedidosCompletados: completedStandar + completedExpress,
   };
 
   // Estados de pedidos
   const estadosPedidos = [
     {
       id: 1,
-      estado: "Facturados",
-      cantidad: stats.pedidosFacturados,
+      estado: "Completado",
+      cantidad: stats.pedidosCompletados,
       color: "success",
       icon: <CheckCircleIcon />,
     },
@@ -70,7 +81,7 @@ const HomeViewModel = observer(() => {
     // },
   ];
 
-  const pedidosEstandar = myOrders.map((order) => {
+  const pedidosEstandar = myOrderStandar?.map((order) => {
     return {
       id: order.id,
       cliente: order.customer_name,
@@ -81,7 +92,7 @@ const HomeViewModel = observer(() => {
     };
   });
 
-  const pedidosExpress = myOrderExpress.map((order) => {
+  const pedidosExpress = myOrdersExpress?.map((order) => {
     return {
       id: order.id,
       cliente: order.client_info,
@@ -134,6 +145,11 @@ const HomeViewModel = observer(() => {
     { id: 3, nombre: "Laura Mendoza", ventasHoy: 2100.5, pedidos: 3 },
     { id: 4, nombre: "Javier López", ventasHoy: 1850.25, pedidos: 3 },
   ];
+
+  useEffect(() => {
+    getMyOrderStandar(token);
+    getMyOrdersExpress(token);
+  }, []);
 
   return (
     <HomeView

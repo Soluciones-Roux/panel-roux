@@ -9,18 +9,11 @@ import {
   ListItemText,
   Box,
   Chip,
-  Modal,
-  TextField,
-  Button,
-  Divider,
-  Stack,
 } from "@mui/material";
 import { Assignment as AssignmentIcon } from "@mui/icons-material";
 import PropTypes from "prop-types";
 import { formatPrice } from "../../../utils/formatPrice";
 import { useState } from "react";
-import useAuth from "../../hooks/useAuth";
-import { useOrders } from "../../hooks/useOrder";
 import OrderDetail from "./OrderDetail";
 
 /**
@@ -92,7 +85,7 @@ const OrdersListCore = ({
                         label={pedido.estado}
                         size="small"
                         color={
-                          pedido.estado === "Facturado"
+                          pedido.estado === "Completado"
                             ? "success"
                             : pedido.estado === "Pendiente"
                             ? "warning"
@@ -127,6 +120,7 @@ OrdersListCore.propTypes = {
   orders: PropTypes.array.isRequired,
   color: PropTypes.string,
   showTotalKey: PropTypes.string,
+  isExpress: PropTypes.bool,
 };
 
 export default OrdersListCore;

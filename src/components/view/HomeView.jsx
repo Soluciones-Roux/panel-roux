@@ -54,7 +54,7 @@ const HomeView = ({
                 <MoneyIcon />
               </Avatar>
               <Typography variant="h5" gutterBottom>
-                ${stats.totalVendidoHoy.toLocaleString()}
+                ${stats?.totalVendidoHoy?.toLocaleString()}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Total vendido hoy
@@ -71,14 +71,14 @@ const HomeView = ({
                 <OnlineIcon />
               </Avatar>
               <Typography variant="h5" gutterBottom>
-                {stats.vendedoresOnline}/{stats.totalVendedores}
+                {stats?.vendedoresOnline}/{stats?.totalVendedores}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Vendedores en línea
               </Typography>
               <LinearProgress
                 variant="determinate"
-                value={(stats.vendedoresOnline / stats.totalVendedores) * 100}
+                value={(stats?.vendedoresOnline / stats?.totalVendedores) * 100}
                 sx={{ mt: -0.5 }}
               />
             </CardContent>
@@ -93,7 +93,7 @@ const HomeView = ({
                 <AssignmentIcon />
               </Avatar>
               <Typography variant="h5" gutterBottom>
-                {stats.pedidosHoy}
+                {stats?.pedidosHoy}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Pedidos hoy
@@ -110,7 +110,7 @@ const HomeView = ({
                 <PendingIcon />
               </Avatar>
               <Typography variant="h5" gutterBottom>
-                {stats.pedidosPendientes}
+                {stats?.pedidosPendientes}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Pendientes
@@ -129,26 +129,26 @@ const HomeView = ({
                 sx={{ display: "flex", alignItems: "center" }}
               >
                 <OnlineIcon sx={{ mr: 1 }} />
-                Vendedores en Línea ({stats.vendedoresOnline})
+                Vendedores en Línea ({stats?.vendedoresOnline})
               </Typography>
 
               <List>
                 {vendedoresOnline.map((vendedor) => (
-                  <ListItem key={vendedor.id} divider>
+                  <ListItem key={vendedor?.id} divider>
                     <ListItemAvatar>
                       <Avatar sx={{ bgcolor: "primary.main" }}>
                         <PersonIcon />
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText
-                      primary={vendedor.nombre}
+                      primary={vendedor?.nombre}
                       secondary={
                         <Box>
                           <Typography variant="body2">
-                            Ventas: ${vendedor.ventasHoy.toLocaleString()}
+                            Ventas: ${vendedor?.ventasHoy.toLocaleString()}
                           </Typography>
                           <Typography variant="body2">
-                            Pedidos: {vendedor.pedidos}
+                            Pedidos: {vendedor?.pedidos}
                           </Typography>
                         </Box>
                       }
@@ -202,17 +202,16 @@ const HomeView = ({
           </Grid>
 
           {/* Estandar, pulir bien luego */}
-          {/* <Grid item xs={12} md={12}>
+          <Grid item xs={12} md={12}>
             <OrdersListCore
               title="Lista de pedidos Estándar"
               orders={pedidosEstandar}
               color="secondary"
               showTotalKey="monto"
             />
-          </Grid> */}
+          </Grid>
 
           {/* Express, para mvp */}
-
           <Grid item xs={12} md={12}>
             <OrdersListCore
               title="Lista de pedidos Express"

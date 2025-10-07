@@ -10,7 +10,7 @@ import {
 import { formatPrice } from "../../../utils/formatPrice";
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { useOrders } from "../../hooks/useOrder";
+// import { useOrderStandar } from "../../hooks/useOrder";
 import moment from "moment";
 
 const OrderDetail = ({
@@ -19,7 +19,7 @@ const OrderDetail = ({
   isExpress,
   handleCloseModal,
 }) => {
-  const { handleCrearPedidoExpress } = useOrders();
+  // const { handleCrearPedidoExpress } = useOrderStandar();
 
   const [saveOrderCompleted, setSaveOrderCompleted] = useState({});
   const onChangeOrder = (e) => {
@@ -36,14 +36,12 @@ const OrderDetail = ({
         idOrder: selectedPedido.id,
       };
 
-      handleCrearPedidoExpress(pedido);
+      // handleCrearPedidoExpress(pedido);
       return saveOrderCompleted;
     }
 
     handleCloseModal();
   };
-
-  console.log("selected", selectedPedido);
 
   return (
     <Modal open={openModal} onClose={handleCloseModal}>
@@ -64,6 +62,7 @@ const OrderDetail = ({
           width: 480,
           maxHeight: "80vh",
           overflowY: "auto",
+          ":focus-visible": { outline: "none" },
         }}
       >
         <Typography variant="h6" gutterBottom>
@@ -122,15 +121,34 @@ const OrderDetail = ({
             <Divider sx={{ my: 2 }} />
 
             {isExpress ? (
-              <Typography
-                variant="body2"
-                sx={{ mb: 3, color: "text.secondary" }}
+              <Box
+                sx={{
+                  p: 2,
+                  my: 2,
+                  borderRadius: 2,
+                  backgroundColor: "rgba(0, 123, 255, 0.05)", // azul suave
+                  border: "1px solid rgba(0, 123, 255, 0.2)",
+                }}
               >
-                Un pedido express es un pedido rápido sin factura inmediata ni
-                afecta inventarios. El equipo de logística lo facturará y
-                asignará su número de referencia junto con el total
-                correspondiente.
-              </Typography>
+                <Typography
+                  variant="subtitle1"
+                  sx={{ fontWeight: 600, color: "info.main", mb: 1 }}
+                >
+                  ℹ️ Pedido Express
+                </Typography>
+
+                <Typography
+                  variant="body2"
+                  sx={{ color: "text.secondary", lineHeight: 1.7 }}
+                >
+                  Un pedido <strong>express</strong> es un pedido rápido sin
+                  factura inmediata ni afecta inventarios.
+                  <br />
+                  El equipo de <strong>logística</strong> se encargará de
+                  facturarlo, asignar su número de referencia y registrar el{" "}
+                  <strong>total correspondiente</strong>.
+                </Typography>
+              </Box>
             ) : (
               <>
                 <Stack direction="row" justifyContent="space-between">
@@ -167,24 +185,38 @@ const OrderDetail = ({
               </>
             )}
 
-            {selectedPedido.estado === "Facturado" ? (
-              <Typography
-                variant="body2"
-                sx={{ mb: 3, color: "text.secondary" }}
+            {selectedPedido.estado === "Completado" ? (
+              <Box
+                sx={{
+                  p: 2,
+                  borderRadius: 2,
+                  backgroundColor: "rgba(0, 128, 0, 0.05)",
+                  border: "1px solid rgba(0,128,0,0.2)",
+                }}
               >
-                Este pedido ya fue facturado.
-                <br />
-                Facturado por: {selectedPedido.facturadoPor}
-                <br />
-                Fecha completado:{" "}
-                {moment(selectedPedido.fechaFacturado).format(
-                  "YYYY-MM-DD HH:mm"
-                )}
-                <br />
-                Factura referencia: {selectedPedido.facturaReferencia}
-                <br />
-                Total factura generada: {formatPrice(selectedPedido.total)}
-              </Typography>
+                <Typography
+                  variant="subtitle1"
+                  sx={{ fontWeight: 600, color: "success.main", mb: 1 }}
+                >
+                  ✅ Pedido facturado
+                </Typography>
+
+                <Typography
+                  variant="body2"
+                  sx={{ color: "text.secondary", lineHeight: 1.7 }}
+                >
+                  <strong>Facturado por:</strong>{" "}
+                  {selectedPedido.facturadoPor || "—"} <br />
+                  <strong>Fecha:</strong>{" "}
+                  {moment(selectedPedido.fechaFacturado).format(
+                    "YYYY-MM-DD HH:mm"
+                  )}{" "}
+                  <br />
+                  <strong>Referencia factura:</strong>{" "}
+                  {selectedPedido.facturaReferencia || "—"} <br />
+                  <strong>Total:</strong> {formatPrice(selectedPedido.total)}
+                </Typography>
+              </Box>
             ) : (
               <>
                 {" "}
