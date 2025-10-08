@@ -1,10 +1,10 @@
 import { fetchPrivate } from "./config/fetch";
-import { apiHost, ordersAPI, privateAPI, quickOrdersApi } from "./config/host";
+import { apiHost, privateAPI, quickOrdersApi } from "./config/host";
 
 export const fetchMyOrdersExpressService = async (token) => {
   if (!token) return console.log("No Auth Token Send");
   const data = await fetchPrivate(
-    `${apiHost}${privateAPI}${ordersAPI}/my-orders-express`,
+    `${apiHost}${privateAPI}${quickOrdersApi}`,
     token,
     {
       method: "GET",

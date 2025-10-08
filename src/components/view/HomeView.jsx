@@ -29,6 +29,7 @@ const HomeView = ({
   estadosPedidos,
   pedidosEstandar,
   pedidosExpress,
+  sellersCompany,
 }) => {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -71,14 +72,15 @@ const HomeView = ({
                 <OnlineIcon />
               </Avatar>
               <Typography variant="h5" gutterBottom>
-                {stats?.vendedoresOnline}/{stats?.totalVendedores}
+                {/* ajuste total vendedores companies, y omitir 5 */}
+                {vendedoresOnline.length}/{sellersCompany?.length}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Vendedores en línea
               </Typography>
               <LinearProgress
                 variant="determinate"
-                value={(stats?.vendedoresOnline / stats?.totalVendedores) * 100}
+                value={(vendedoresOnline.length / sellersCompany?.length) * 100}
                 sx={{ mt: -0.5 }}
               />
             </CardContent>
@@ -129,11 +131,11 @@ const HomeView = ({
                 sx={{ display: "flex", alignItems: "center" }}
               >
                 <OnlineIcon sx={{ mr: 1 }} />
-                Vendedores en Línea ({stats?.vendedoresOnline})
+                Vendedores en Línea ({vendedoresOnline?.length})
               </Typography>
 
               <List>
-                {vendedoresOnline.map((vendedor) => (
+                {vendedoresOnline?.map((vendedor) => (
                   <ListItem key={vendedor?.id} divider>
                     <ListItemAvatar>
                       <Avatar sx={{ bgcolor: "primary.main" }}>
@@ -144,6 +146,9 @@ const HomeView = ({
                       primary={vendedor?.nombre}
                       secondary={
                         <Box>
+                          <Typography variant="body2">
+                            Última conexión: {vendedor?.ultimaConexion}
+                          </Typography>
                           <Typography variant="body2">
                             Ventas: ${vendedor?.ventasHoy.toLocaleString()}
                           </Typography>

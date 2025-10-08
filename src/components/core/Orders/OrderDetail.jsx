@@ -12,6 +12,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 // import { useOrderStandar } from "../../hooks/useOrder";
 import moment from "moment";
+import { useOrdersExpress } from "../../hooks/useOrderExpress";
 
 const OrderDetail = ({
   selectedPedido,
@@ -21,14 +22,18 @@ const OrderDetail = ({
 }) => {
   // const { handleCrearPedidoExpress } = useOrderStandar();
 
+  const { markCompleteOrderExpress } = useOrdersExpress();
+
   const [saveOrderCompleted, setSaveOrderCompleted] = useState({});
   const onChangeOrder = (e) => {
     const { value, name } = e.target;
     setSaveOrderCompleted({ ...saveOrderCompleted, [name]: value });
   };
 
+  const [loading, setLoading] = useState(false);
+
   const handleOrderCompleted = (e) => {
-    e.preventDefault();
+    setLoading(true);
 
     if (isExpress) {
       let pedido = {
@@ -36,9 +41,12 @@ const OrderDetail = ({
         idOrder: selectedPedido.id,
       };
 
-      // handleCrearPedidoExpress(pedido);
+      markCompleteOrderExpress(pedido);
+
       return saveOrderCompleted;
     }
+
+    setLoading(false);
 
     handleCloseModal();
   };
@@ -59,7 +67,7 @@ const OrderDetail = ({
           boxShadow: 24,
           p: 4,
           borderRadius: 3,
-          width: 480,
+          width: "90%",
           maxHeight: "80vh",
           overflowY: "auto",
           ":focus-visible": { outline: "none" },

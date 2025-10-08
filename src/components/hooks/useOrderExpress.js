@@ -9,17 +9,8 @@ export const useOrdersExpress = () => {
     getMyOrdersExpress,
     pendingExpress,
     completedExpress,
-    orderExpressTotal
+    orderExpressTotal,
   } = orderExpressStore;
-
-  // const {
-  //   myOrderStandar,
-  //   getMyOrderStandar,
-  //   createOrder,
-  //   orderStandarTotal,
-  //   pendingStandar,
-  //   completedStandar,
-  // } = orderStandardStore;
 
   const markCompleteOrderExpress = async (pedidoExpress) => {
     await orderExpressStore.markCompleteOrderExpress(token, pedidoExpress);
@@ -31,6 +22,6 @@ export const useOrdersExpress = () => {
     markCompleteOrderExpress,
     pendingExpress,
     completedExpress,
-    orderExpressTotal
+    orderExpressTotal,
   };
 };

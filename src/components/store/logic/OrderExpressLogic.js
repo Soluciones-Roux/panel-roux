@@ -14,7 +14,7 @@ export const fetchMyOrdersExpressLogic = async (token) => {
     }
 
     if (result.success) {
-      return { success: true, myOrdersExpress: result.data };
+      return { success: true, myOrdersExpress: result.ordersExpress };
     } else {
       throw new Error(
         result.message || "Error fetching general orders express"

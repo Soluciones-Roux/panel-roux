@@ -9,9 +9,12 @@ import { useOrderStandar } from "../hooks/useOrder";
 import moment from "moment";
 import { useEffect } from "react";
 import { useOrdersExpress } from "../hooks/useOrderExpress";
+import { useOnlineUsers } from "../hooks/useOnlineUsers";
 
 const HomeViewModel = observer(() => {
   const { user, token } = useAuth();
+  const { sellersCompany, statsOnlineUsers, getStatsOnlineUsers } =
+    useOnlineUsers();
 
   //load orders
   const {
@@ -29,8 +32,6 @@ const HomeViewModel = observer(() => {
     completedExpress,
     orderExpressTotal,
   } = useOrdersExpress();
-
-  console.log(orderStandarTotal, orderExpressTotal);
 
   //load coords (sí vendedor tiene coord de hoy, cuenta cómo online)
   //load users
@@ -139,16 +140,24 @@ const HomeViewModel = observer(() => {
   // ];
 
   // Vendedores en línea
-  const vendedoresOnline = [
-    { id: 1, nombre: "María González", ventasHoy: 3250.0, pedidos: 5 },
-    { id: 2, nombre: "Roberto Sánchez", ventasHoy: 2850.75, pedidos: 4 },
-    { id: 3, nombre: "Laura Mendoza", ventasHoy: 2100.5, pedidos: 3 },
-    { id: 4, nombre: "Javier López", ventasHoy: 1850.25, pedidos: 3 },
-  ];
+
+  const vendedoresOnline = statsOnlineUsers.map((user) => {
+    return {
+      id: user.user_id,
+      nombre: user.username,
+      ventasHoy:
+        Number(user.total_order_standar) + Number(user.total_order_express),
+      pedidos:
+        Number(user.quantity_order_standar) +
+        Number(user.quantity_order_express),
+      ultimaConexion: moment(user.last_seen).format("YYYY/MM/DD HH:mm"),
+    };
+  });
 
   useEffect(() => {
     getMyOrderStandar(token);
     getMyOrdersExpress(token);
+    getStatsOnlineUsers(token);
   }, []);
 
   return (
@@ -160,6 +169,7 @@ const HomeViewModel = observer(() => {
       estadosPedidos={estadosPedidos}
       pedidosEstandar={pedidosEstandar}
       pedidosExpress={pedidosExpress}
+      sellersCompany={sellersCompany}
     />
   );
 });
