@@ -1,4 +1,4 @@
-import { orderExpressStore } from "../store/orderExpressStore";
+import { OrderExpressStore } from "../store/OrderExpressStore";
 import useAuth from "./useAuth";
 
 export const useOrdersExpress = () => {
@@ -10,10 +10,10 @@ export const useOrdersExpress = () => {
     pendingExpress,
     completedExpress,
     orderExpressTotal,
-  } = orderExpressStore;
+  } = OrderExpressStore;
 
   const markCompleteOrderExpress = async (pedidoExpress) => {
-    await orderExpressStore.markCompleteOrderExpress(token, pedidoExpress);
+    await OrderExpressStore.markCompleteOrderExpress(token, pedidoExpress);
   };
 
   return {

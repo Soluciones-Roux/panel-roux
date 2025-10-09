@@ -4,7 +4,7 @@ import {
   markCompleteOrderExpressLogic,
 } from "./logic/OrderExpressLogic";
 
-export class OrderExpressStore {
+export class OrderExpress {
   myOrdersExpress = [];
   orderExpressTotal = 0;
   pendingExpress = 0;
@@ -86,4 +86,4 @@ export class OrderExpressStore {
   }
 }
 
-export const orderExpressStore = new OrderExpressStore();
+export const OrderExpressStore = new OrderExpress();
