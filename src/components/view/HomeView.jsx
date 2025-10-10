@@ -21,7 +21,7 @@ import {
   Pending as PendingIcon,
 } from "@mui/icons-material";
 import OrdersListCore from "../core/Orders/OrdersListCore";
-import UserLocationModal from "../core/userLocationModal";
+import UserLocationModal from "../core/UserLocationModal";
 
 const HomeView = ({
   userName,
