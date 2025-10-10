@@ -7,14 +7,19 @@ import HomeView from "../view/HomeView";
 import useAuth from "../hooks/useAuth";
 import { useOrderStandar } from "../hooks/useOrder";
 import moment from "moment";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useOrdersExpress } from "../hooks/useOrderExpress";
 import { useOnlineUsers } from "../hooks/useOnlineUsers";
 
 const HomeViewModel = observer(() => {
   const { user, token } = useAuth();
-  const { sellersCompany, statsOnlineUsers, getStatsOnlineUsers } =
-    useOnlineUsers();
+  const {
+    sellersCompany,
+    statsOnlineUsers,
+    getStatsOnlineUsers,
+    getLocationUser,
+    locationUser,
+  } = useOnlineUsers();
 
   //load orders
   const {
@@ -39,6 +44,8 @@ const HomeViewModel = observer(() => {
 
   const companyName = user.name_company;
   const userName = user.username;
+
+  const [loading, setLoading] = useState(false);
 
   // Estadísticas principales
   const stats = {
@@ -160,6 +167,29 @@ const HomeViewModel = observer(() => {
     getStatsOnlineUsers(token);
   }, []);
 
+  const sellerLocations = [
+    {
+      latitude: 3.475058,
+      longitude: -76.481571,
+      created_at: "2025-09-26T13:47:55Z",
+    },
+    {
+      latitude: 3.476102,
+      longitude: -76.482202,
+      created_at: "2025-09-26T13:52:55Z",
+    },
+  ];
+
+  const [openModalLocation, setOpenModalLocation] = useState(false);
+
+  const handleUserLocations = async (seller) => {
+    console.log(seller.id);
+    setOpenModalLocation(true);
+    setLoading(true);
+    await getLocationUser(token, seller.id);
+    setLoading(false);
+  };
+
   return (
     <HomeView
       userName={userName}
@@ -170,6 +200,13 @@ const HomeViewModel = observer(() => {
       pedidosEstandar={pedidosEstandar}
       pedidosExpress={pedidosExpress}
       sellersCompany={sellersCompany}
+      locations={sellerLocations}
+      loading={loading}
+      getUserLocation
+      handleUserLocation={handleUserLocations}
+      openModalLocation={openModalLocation}
+      setOpenModalLocation={setOpenModalLocation}
+      locationUser={locationUser}
     />
   );
 });

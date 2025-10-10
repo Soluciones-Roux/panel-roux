@@ -12,6 +12,7 @@ import {
   ListItemAvatar,
   LinearProgress,
 } from "@mui/material";
+
 import {
   Assignment as AssignmentIcon,
   Person as PersonIcon,
@@ -20,6 +21,7 @@ import {
   Pending as PendingIcon,
 } from "@mui/icons-material";
 import OrdersListCore from "../core/Orders/OrdersListCore";
+import UserLocationModal from "../core/userLocationModal";
 
 const HomeView = ({
   userName,
@@ -30,6 +32,11 @@ const HomeView = ({
   pedidosEstandar,
   pedidosExpress,
   sellersCompany,
+  handleUserLocation,
+  openModalLocation,
+  setOpenModalLocation,
+  loading,
+  locationUser,
 }) => {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -155,6 +162,18 @@ const HomeView = ({
                           <Typography variant="body2">
                             Pedidos: {vendedor?.pedidos}
                           </Typography>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: "#007bff",
+                              cursor: "pointer",
+                              textDecoration: "none",
+                              "&:hover": { textDecoration: "underline" },
+                            }}
+                            onClick={() => handleUserLocation(vendedor)}
+                          >
+                            Ver ubicaciones
+                          </Typography>
                         </Box>
                       }
                     />
@@ -227,6 +246,15 @@ const HomeView = ({
             />
           </Grid>
         </Grid>
+      </Grid>
+
+      <Grid>
+        <UserLocationModal
+          openModal={openModalLocation}
+          onCloseModal={setOpenModalLocation}
+          loading={loading}
+          locationUser={locationUser}
+        />
       </Grid>
     </Container>
   );
