@@ -7,7 +7,7 @@ import {
   Divider,
   Stack,
 } from "@mui/material";
-import { formatPrice } from "../../../utils/formatPrice";
+import { cleanPriceValue, formatPrice } from "../../../utils/formatPrice";
 import { useState } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
@@ -141,22 +141,26 @@ const OrderDetail = ({
                   🧾 Detalle de productos
                 </Typography>
                 <Box sx={{ mb: 2 }}>
-                  {selectedPedido.productos?.map((item) => (
-                    <Stack
-                      key={item.id}
-                      direction="row"
-                      justifyContent="space-between"
-                      alignItems="center"
-                      sx={{ mb: 1 }}
-                    >
-                      <Typography variant="body2">
-                        {item.product_name} × {item.quantity}
-                      </Typography>
-                      <Typography variant="body2">
-                        {formatPrice(item.subtotal)}
-                      </Typography>
-                    </Stack>
-                  ))}
+                  {selectedPedido.productos?.map((item) => {
+                    return (
+                      <Stack
+                        key={item.id}
+                        direction="row"
+                        justifyContent="space-between"
+                        alignItems="center"
+                        sx={{ mb: 1 }}
+                      >
+                        <Typography variant="body2">
+                          NOMBRE PRODUCTO:{item.product_name} --- CANTIDAD:
+                          {item.quantity} --- PRECIO UNIDAD:{" "}
+                          {formatPrice(item.price)}
+                        </Typography>
+                        <Typography variant="body2">
+                          {formatPrice(item.subtotal)}
+                        </Typography>
+                      </Stack>
+                    );
+                  })}
                 </Box>
 
                 <Divider sx={{ my: 2 }} />
@@ -165,8 +169,8 @@ const OrderDetail = ({
                   <Typography variant="subtitle2">Subtotal:</Typography>
                   <Typography variant="subtitle2">
                     {formatPrice(
-                      selectedPedido.items?.reduce(
-                        (acc, i) => acc + parseFloat(i.price || 0),
+                      selectedPedido.productos?.reduce(
+                        (acc, i) => acc + cleanPriceValue(i.price),
                         0
                       )
                     )}
@@ -186,7 +190,7 @@ const OrderDetail = ({
                   sx={{ mt: 1, mb: 3 }}
                 >
                   <Typography variant="h6">
-                    Total: {formatPrice(selectedPedido.monto)}
+                    Total: {formatPrice(selectedPedido.total)}
                   </Typography>
                 </Stack>
               </>

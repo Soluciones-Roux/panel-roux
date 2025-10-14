@@ -10,7 +10,6 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { useOrdersExpress } from "../hooks/useOrderExpress";
 import { useOnlineUsers } from "../hooks/useOnlineUsers";
-import { cloneDeep } from "lodash";
 
 const HomeViewModel = observer(() => {
   const { user, token } = useAuth();
@@ -38,10 +37,6 @@ const HomeViewModel = observer(() => {
     completedExpress,
     orderExpressTotal,
   } = useOrdersExpress();
-
-  //load coords (sí vendedor tiene coord de hoy, cuenta cómo online)
-  //load users
-  //crar lógica vistas de vendedores
 
   const companyName = user.name_company;
   const userName = user.username;
@@ -74,27 +69,13 @@ const HomeViewModel = observer(() => {
       color: "warning",
       icon: <PendingIcon />,
     },
-    // {
-    //   id: 3,
-    //   estado: "En camino",
-    //   cantidad: 5,
-    //   color: "info",
-    //   icon: <ShippingIcon />,
-    // },
-    // {
-    //   id: 4,
-    //   estado: "Cancelado",
-    //   cantidad: 2,
-    //   color: "error",
-    //   icon: <CancelIcon />,
-    // },
   ];
 
   const pedidosEstandar = myOrderStandar?.map((order) => {
     return {
       id: order.id,
       cliente: order.customer_name,
-      creado_por: order.username,
+      creado_por: order.seller_name,
       productos: order.items,
       total: order.total,
       estado: order.status_name,
@@ -119,38 +100,6 @@ const HomeViewModel = observer(() => {
       facturaReferencia: order.bill_references,
     };
   });
-
-  // Pedidos recientes
-  // const pedidosEstandar = [
-  //   {
-  //     id: 1001,
-  //     cliente: "Supermercado Central",
-  //     monto: 1250.5,
-  //     estado: "Facturado",
-  //     fecha: "10:30 AM",
-  //   },
-  //   {
-  //     id: 1002,
-  //     cliente: "Tienda Don José",
-  //     monto: 845.25,
-  //     estado: "Pendiente",
-  //     fecha: "11:15 AM",
-  //   },
-  //   // {
-  //   //   id: 1003,
-  //   //   cliente: "Minimarket La Esquina",
-  //   //   monto: 1560.0,
-  //   //   estado: "En camino",
-  //   //   fecha: "9:45 AM",
-  //   // },
-  //   {
-  //     id: 1004,
-  //     cliente: "Abastos Hernández",
-  //     monto: 920.3,
-  //     estado: "Facturado",
-  //     fecha: "8:20 AM",
-  //   },
-  // ];
 
   // Vendedores en línea
 
