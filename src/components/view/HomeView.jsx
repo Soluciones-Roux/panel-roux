@@ -232,6 +232,7 @@ const HomeView = ({
               orders={pedidosEstandar}
               color="secondary"
               showTotalKey="monto"
+              isStandar={true}
             />
           </Grid>
 

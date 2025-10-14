@@ -10,54 +10,53 @@ import {
 import { formatPrice } from "../../../utils/formatPrice";
 import { useState } from "react";
 import PropTypes from "prop-types";
-// import { useOrderStandar } from "../../hooks/useOrder";
 import moment from "moment";
 import { useOrdersExpress } from "../../hooks/useOrderExpress";
+import { useOrderStandar } from "../../hooks/useOrder";
+import { NumericFormat } from "react-number-format";
 
 const OrderDetail = ({
   selectedPedido,
   openModal,
-  isExpress,
+  isExpress = false,
+  isStandar = false,
   handleCloseModal,
 }) => {
-  // const { handleCrearPedidoExpress } = useOrderStandar();
-
   const { markCompleteOrderExpress } = useOrdersExpress();
+  const { markCompleteOrderStandar } = useOrderStandar();
 
   const [saveOrderCompleted, setSaveOrderCompleted] = useState({});
-  const onChangeOrder = (e) => {
-    const { value, name } = e.target;
-    setSaveOrderCompleted({ ...saveOrderCompleted, [name]: value });
-  };
-
   const [loading, setLoading] = useState(false);
 
-  const handleOrderCompleted = (e) => {
+  const onChangeOrder = (e) => {
+    const { name, value } = e.target;
+    setSaveOrderCompleted((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleOrderCompleted = async (e) => {
+    e.preventDefault();
     setLoading(true);
 
-    if (isExpress) {
-      let pedido = {
-        ...saveOrderCompleted,
-        idOrder: selectedPedido.id,
-      };
+    const pedido = {
+      ...saveOrderCompleted,
+      idOrder: selectedPedido.id,
+    };
 
-      markCompleteOrderExpress(pedido);
-
-      return saveOrderCompleted;
+    try {
+      if (isExpress) await markCompleteOrderExpress(pedido);
+      if (isStandar) await markCompleteOrderStandar(pedido);
+    } finally {
+      setLoading(false);
+      // setSaveOrderCompleted({});
+      handleCloseModal();
     }
-
-    setLoading(false);
-
-    handleCloseModal();
   };
 
   return (
     <Modal open={openModal} onClose={handleCloseModal}>
       <Box
         component="form"
-        onSubmit={(e) => {
-          handleOrderCompleted(e);
-        }}
+        onSubmit={handleOrderCompleted}
         sx={{
           position: "absolute",
           top: "50%",
@@ -86,7 +85,6 @@ const OrderDetail = ({
             >
               Cliente: <strong>{selectedPedido.cliente}</strong>
             </Typography>
-
             <Typography
               variant="subtitle2"
               color="text.secondary"
@@ -97,68 +95,72 @@ const OrderDetail = ({
 
             <Divider sx={{ mb: 2 }} />
 
-            <Typography variant="subtitle1" gutterBottom>
-              🧾 {isExpress ? "Detalle de pedido" : "Detalle de productos"}
-            </Typography>
+            {/* ======== BLOQUE EXPRESS ======== */}
+            {isExpress && (
+              <>
+                <Typography variant="subtitle1" gutterBottom>
+                  🧾 Detalle de pedido (Express)
+                </Typography>
+                <Typography variant="body2" sx={{ mb: 2 }}>
+                  {selectedPedido.detalle_orden}
+                </Typography>
 
-            {isExpress ? (
-              <Typography variant="subtitle1" gutterBottom>
-                {selectedPedido.detalle_orden}
-              </Typography>
-            ) : (
-              <Box sx={{ mb: 2 }}>
-                {selectedPedido.productos?.map((item) => (
-                  <Stack
-                    key={item.id}
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    sx={{ mb: 1 }}
+                <Box
+                  sx={{
+                    p: 2,
+                    my: 2,
+                    borderRadius: 2,
+                    backgroundColor: "rgba(0, 123, 255, 0.05)",
+                    border: "1px solid rgba(0, 123, 255, 0.2)",
+                  }}
+                >
+                  <Typography
+                    variant="subtitle1"
+                    sx={{ fontWeight: 600, color: "info.main", mb: 1 }}
                   >
-                    <Typography variant="body2">
-                      {item.product_name} × {item.quantity}
-                    </Typography>
-                    <Typography variant="body2">
-                      {formatPrice(item.subtotal)}
-                    </Typography>
-                  </Stack>
-                ))}
-              </Box>
+                    ℹ️ Pedido Express
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "text.secondary", lineHeight: 1.7 }}
+                  >
+                    Un pedido <strong>express</strong> no genera factura
+                    inmediata ni afecta inventarios.
+                    <br />
+                    El equipo de <strong>logística</strong> registrará el{" "}
+                    <strong>total correspondiente</strong> posteriormente.
+                  </Typography>
+                </Box>
+              </>
             )}
 
-            <Divider sx={{ my: 2 }} />
-
-            {isExpress ? (
-              <Box
-                sx={{
-                  p: 2,
-                  my: 2,
-                  borderRadius: 2,
-                  backgroundColor: "rgba(0, 123, 255, 0.05)", // azul suave
-                  border: "1px solid rgba(0, 123, 255, 0.2)",
-                }}
-              >
-                <Typography
-                  variant="subtitle1"
-                  sx={{ fontWeight: 600, color: "info.main", mb: 1 }}
-                >
-                  ℹ️ Pedido Express
-                </Typography>
-
-                <Typography
-                  variant="body2"
-                  sx={{ color: "text.secondary", lineHeight: 1.7 }}
-                >
-                  Un pedido <strong>express</strong> es un pedido rápido sin
-                  factura inmediata ni afecta inventarios.
-                  <br />
-                  El equipo de <strong>logística</strong> se encargará de
-                  facturarlo, asignar su número de referencia y registrar el{" "}
-                  <strong>total correspondiente</strong>.
-                </Typography>
-              </Box>
-            ) : (
+            {/* ======== BLOQUE STANDAR ======== */}
+            {isStandar && (
               <>
+                <Typography variant="subtitle1" gutterBottom>
+                  🧾 Detalle de productos
+                </Typography>
+                <Box sx={{ mb: 2 }}>
+                  {selectedPedido.productos?.map((item) => (
+                    <Stack
+                      key={item.id}
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      sx={{ mb: 1 }}
+                    >
+                      <Typography variant="body2">
+                        {item.product_name} × {item.quantity}
+                      </Typography>
+                      <Typography variant="body2">
+                        {formatPrice(item.subtotal)}
+                      </Typography>
+                    </Stack>
+                  ))}
+                </Box>
+
+                <Divider sx={{ my: 2 }} />
+
                 <Stack direction="row" justifyContent="space-between">
                   <Typography variant="subtitle2">Subtotal:</Typography>
                   <Typography variant="subtitle2">
@@ -183,16 +185,14 @@ const OrderDetail = ({
                   justifyContent="space-between"
                   sx={{ mt: 1, mb: 3 }}
                 >
-                  <Typography variant="h6">Total:</Typography>
-                  <Typography variant="h6" color="primary">
-                    {/* {formatPrice(
-                      selectedPedido[showTotalKey] || selectedPedido.total || 0
-                    )} */}
+                  <Typography variant="h6">
+                    Total: {formatPrice(selectedPedido.monto)}
                   </Typography>
                 </Stack>
               </>
             )}
 
+            {/* ======== BLOQUE ESTADO ======== */}
             {selectedPedido.estado === "Completado" ? (
               <Box
                 sx={{
@@ -208,7 +208,6 @@ const OrderDetail = ({
                 >
                   ✅ Pedido facturado
                 </Typography>
-
                 <Typography
                   variant="body2"
                   sx={{ color: "text.secondary", lineHeight: 1.7 }}
@@ -227,18 +226,28 @@ const OrderDetail = ({
               </Box>
             ) : (
               <>
-                {" "}
-                {/* FORM INPUTS */}
-                <TextField
+                {/* ======== FORM ======== */}
+                <NumericFormat
+                  customInput={TextField}
                   fullWidth
                   required
-                  type="number"
-                  label="Total pedido"
-                  value={saveOrderCompleted.total || ""}
+                  label="Confirmar Total pedido"
                   name="total"
-                  onChange={onChangeOrder}
+                  value={saveOrderCompleted?.total || ""}
+                  onValueChange={(values) => {
+                    const { floatValue } = values;
+                    onChangeOrder({
+                      target: { name: "total", value: floatValue },
+                    });
+                  }}
+                  thousandSeparator="."
+                  decimalSeparator=","
+                  prefix="$"
+                  decimalScale={2}
+                  fixedDecimalScale
                   sx={{ mb: 3 }}
                 />
+
                 <TextField
                   fullWidth
                   required
@@ -250,6 +259,7 @@ const OrderDetail = ({
                   onChange={onChangeOrder}
                   sx={{ mb: 3 }}
                 />
+
                 <TextField
                   fullWidth
                   multiline
@@ -260,18 +270,20 @@ const OrderDetail = ({
                   onChange={onChangeOrder}
                   sx={{ mb: 3 }}
                 />
+
                 <Button
                   fullWidth
                   type="submit"
                   variant="contained"
                   color="success"
                   disabled={
+                    loading ||
                     !saveOrderCompleted.total ||
                     !saveOrderCompleted.bill_reference ||
                     Number(saveOrderCompleted.total) <= 0
                   }
                 >
-                  Marcar como completado
+                  {loading ? "Procesando..." : "Marcar como completado"}
                 </Button>
               </>
             )}
@@ -286,6 +298,7 @@ OrderDetail.propTypes = {
   selectedPedido: PropTypes.object.isRequired,
   openModal: PropTypes.bool.isRequired,
   isExpress: PropTypes.bool,
+  isStandar: PropTypes.bool,
   handleCloseModal: PropTypes.func.isRequired,
 };
 

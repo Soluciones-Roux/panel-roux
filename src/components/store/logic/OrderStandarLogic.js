@@ -1,6 +1,7 @@
 import {
   createOrderStandarService,
   fetchMyOrdersStandarService,
+  markCompleteOrderStandarService,
 } from "../../services/OrderStandarService";
 
 export const createOrderStandarLogic = async (token, order) => {
@@ -47,58 +48,37 @@ export const fetchMyOrderStandar = async (token) => {
   }
 };
 
-// export const fetchMyOrdersExpress = async (token) => {
-//   try {
-//     if (!token) throw new Error("No Auth Token Send");
+export const markCompleteOrderStandarLogic = async (token, orderStandar) => {
+  try {
+    if (!token) throw new Error("No Auth Token Send");
 
-//     const result = await fetchMyOrdersExpressService(token);
+    // {
+    //     "total": "2",
+    //     "bill_reference": "d",
+    //     "note": "a",
+    //     "idOrder": 7,
+    //     "idUser": 4
+    // }
 
-//     if (!result) {
-//       throw new Error("No response from server");
-//     }
+    if (!orderStandar.idOrder) {
+      throw new Error("Order standar ID and User ID are required");
+    }
 
-//     if (result.success) {
-//       return { success: true, myOrdersExpress: result.data };
-//     } else {
-//       throw new Error(
-//         result.message || "Error fetching general orders express"
-//       );
-//     }
-//   } catch (error) {
-//     console.error(error);
-//     return { success: false, error: error.message };
-//   }
-// };
+    const result = await markCompleteOrderStandarService(token, orderStandar);
 
-// export const createOrderExpressLogic = async (token, orderExpress) => {
-//   try {
-//     if (!token) throw new Error("No Auth Token Send");
+    if (!result) {
+      throw new Error("No response from server");
+    }
 
-//     // {
-//     //     "total": "2",
-//     //     "bill_reference": "d",
-//     //     "note": "a",
-//     //     "idOrder": 7,
-//     //     "idUser": 4
-//     // }
+    console.log("result", result);
 
-//     if (!orderExpress.idOrder) {
-//       throw new Error("Order express ID and User ID are required");
-//     }
-
-//     const result = await createOrderExpressService(token, orderExpress);
-
-//     if (!result) {
-//       throw new Error("No response from server");
-//     }
-
-//     if (result.status === 201) {
-//       return { success: true };
-//     } else {
-//       throw new Error(result.message || "Error create order express");
-//     }
-//   } catch (error) {
-//     console.error(error);
-//     return { success: false, error: error.message };
-//   }
-// };
+    if (result.status === 201) {
+      return { success: true };
+    } else {
+      throw new Error(result.message || "Error completing order standar");
+    }
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: error.message };
+  }
+};

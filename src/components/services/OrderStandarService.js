@@ -18,10 +18,24 @@ export const createOrderStandarService = async (token, order) => {
 export const fetchMyOrdersStandarService = async (token) => {
   if (!token) return console.log("No Auth Token Send");
   const data = await fetchPrivate(
-    `${apiHost}${privateAPI}${ordersAPI}/my-orders`,
+    `${apiHost}${privateAPI}${ordersAPI}/my-orders-web`,
     token,
     {
       method: "GET",
+    }
+  );
+
+  return data;
+};
+
+export const markCompleteOrderStandarService = async (token, orderStandar) => {
+  if (!token) return console.log("No Auth Token Send");
+  const data = await fetchPrivate(
+    `${apiHost}${privateAPI}${ordersAPI}/${orderStandar.idOrder}/complete`,
+    token,
+    {
+      method: "PUT",
+      data: orderStandar,
     }
   );
 

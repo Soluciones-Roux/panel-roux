@@ -78,6 +78,14 @@ export const useOrderStandar = (navigation) => {
     navigation.goBack();
   };
 
+  const markCompleteOrderStandar = async (pedido) => {
+    const result = await orderStandardStore.markCompleteOrderStandar(
+      token,
+      pedido
+    );
+    return result;
+  };
+
   return {
     addProduct,
     changeQty,
@@ -93,5 +101,6 @@ export const useOrderStandar = (navigation) => {
     total,
     pendingStandar,
     completedStandar,
+    markCompleteOrderStandar,
   };
 };

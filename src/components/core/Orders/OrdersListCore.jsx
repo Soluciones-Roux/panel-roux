@@ -13,7 +13,7 @@ import {
 import { Assignment as AssignmentIcon } from "@mui/icons-material";
 import PropTypes from "prop-types";
 import { formatPrice } from "../../../utils/formatPrice";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import OrderDetail from "./OrderDetail";
 
 /**
@@ -25,6 +25,7 @@ const OrdersListCore = ({
   color = "primary",
   showTotalKey = "monto",
   isExpress = false,
+  isStandar = false,
 }) => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedPedido, setSelectedPedido] = useState({});
@@ -34,11 +35,10 @@ const OrdersListCore = ({
     setOpenModal(true);
   };
 
-  const handleCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
     setOpenModal(false);
-    setSelectedPedido(null);
-  };
-
+    setSelectedPedido({});
+  }, [selectedPedido]);
   return (
     <>
       <Card elevation={2} sx={{ borderRadius: 3 }}>
@@ -48,57 +48,64 @@ const OrdersListCore = ({
           </Typography>
 
           <List>
-            {orders?.map((pedido) => (
-              <ListItem
-                key={pedido.id}
-                divider
-                onClick={() => handleOpenModal(pedido)}
-                sx={{
-                  cursor: "pointer",
-                  "&:hover": { bgcolor: "grey.50" },
-                }}
-              >
-                <ListItemAvatar>
-                  <Avatar sx={{ bgcolor: `${color}.main` }}>
-                    <AssignmentIcon />
-                  </Avatar>
-                </ListItemAvatar>
+            {orders?.map((pedido) => {
+              return (
+                <ListItem
+                  key={pedido.id}
+                  divider
+                  onClick={() => handleOpenModal(pedido)}
+                  sx={{
+                    cursor: "pointer",
+                    "&:hover": { bgcolor: "grey.50" },
+                  }}
+                >
+                  <ListItemAvatar>
+                    <Avatar sx={{ bgcolor: `${color}.main` }}>
+                      <AssignmentIcon />
+                    </Avatar>
+                  </ListItemAvatar>
 
-                <ListItemText
-                  primary={
-                    <Typography>
-                      <strong>#{pedido.id}</strong> - {pedido.cliente}
-                    </Typography>
-                  }
-                  secondary={
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      <Typography variant="body2">
-                        {formatPrice(pedido[showTotalKey])} • {pedido.fecha}
-                      </Typography>
-                      <Chip
-                        label={pedido.estado}
-                        size="small"
-                        color={
-                          pedido.estado === "Completado"
-                            ? "success"
-                            : pedido.estado === "Pendiente"
-                            ? "warning"
-                            : pedido.estado === "En camino"
-                            ? "info"
-                            : "error"
-                        }
-                      />
-                    </Box>
-                  }
-                />
-              </ListItem>
-            ))}
+                  <ListItemText
+                    primary={
+                      <>
+                        <Typography>
+                          <strong>#{pedido.id}</strong> - {pedido.cliente}
+                        </Typography>
+                        <Typography variant="body2">
+                          Creado por: {pedido.creado_por}
+                        </Typography>
+                      </>
+                    }
+                    secondary={
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        <Typography variant="body2">
+                          {formatPrice(pedido.total)} • {pedido.fecha}
+                        </Typography>
+                        <Chip
+                          label={pedido.estado}
+                          size="small"
+                          color={
+                            pedido.estado === "Completado"
+                              ? "success"
+                              : pedido.estado === "Pendiente"
+                              ? "warning"
+                              : pedido.estado === "En camino"
+                              ? "info"
+                              : "error"
+                          }
+                        />
+                      </Box>
+                    }
+                  />
+                </ListItem>
+              );
+            })}
           </List>
         </CardContent>
       </Card>
@@ -109,6 +116,7 @@ const OrdersListCore = ({
         selectedPedido={selectedPedido}
         openModal={openModal}
         isExpress={isExpress}
+        isStandar={isStandar}
         handleCloseModal={handleCloseModal}
       />
     </>

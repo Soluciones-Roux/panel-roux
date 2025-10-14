@@ -2,7 +2,9 @@ import { makeAutoObservable, runInAction } from "mobx";
 import {
   createOrderStandarLogic,
   fetchMyOrderStandar,
+  markCompleteOrderStandarLogic,
 } from "./logic/OrderStandarLogic";
+import { Token } from "@mui/icons-material";
 
 export class OrderStandardStore {
   myOrderStandar = [];
@@ -44,6 +46,24 @@ export class OrderStandardStore {
     this.clearError();
 
     const result = await createOrderStandarLogic(token, payload);
+
+    runInAction(() => {
+      if (!result.success) this.setError(result.error);
+      this.setLoading(false);
+    });
+
+    return result.success;
+  }
+
+  async markCompleteOrderStandar(token, payload) {
+    this.setLoading(true);
+    this.clearError();
+
+    const result = await markCompleteOrderStandarLogic(token, payload);
+
+    if (result.success) {
+      this.getMyOrderStandar(token);
+    }
 
     runInAction(() => {
       if (!result.success) this.setError(result.error);

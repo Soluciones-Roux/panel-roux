@@ -10,6 +10,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { useOrdersExpress } from "../hooks/useOrderExpress";
 import { useOnlineUsers } from "../hooks/useOnlineUsers";
+import { cloneDeep } from "lodash";
 
 const HomeViewModel = observer(() => {
   const { user, token } = useAuth();
@@ -93,10 +94,14 @@ const HomeViewModel = observer(() => {
     return {
       id: order.id,
       cliente: order.customer_name,
+      creado_por: order.username,
       productos: order.items,
-      monto: order.total,
+      total: order.total,
       estado: order.status_name,
       fecha: moment(order.created_at).format("YYYY-MM-DD HH:mm"),
+      facturadoPor: order.completed_by_name,
+      fechaFacturado: order.completed_at,
+      facturaReferencia: order.bill_references,
     };
   });
 
@@ -104,6 +109,7 @@ const HomeViewModel = observer(() => {
     return {
       id: order.id,
       cliente: order.client_info,
+      creado_por: order.seller_name,
       detalle_orden: order.order_details,
       total: order.total,
       estado: order.status_name,
@@ -183,7 +189,6 @@ const HomeViewModel = observer(() => {
   const [openModalLocation, setOpenModalLocation] = useState(false);
 
   const handleUserLocations = async (seller) => {
-    console.log(seller.id);
     setOpenModalLocation(true);
     setLoading(true);
     await getLocationUser(token, seller.id);
