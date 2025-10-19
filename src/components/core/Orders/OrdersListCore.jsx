@@ -85,7 +85,7 @@ const OrdersListCore = ({
                         }}
                       >
                         <Typography variant="body2">
-                          {formatPrice(pedido.total)} • {pedido.fecha}
+                          ${formatPrice(pedido.total)} • {pedido.fecha}
                         </Typography>
                         <Chip
                           label={pedido.estado}

@@ -151,7 +151,7 @@ const OrderDetail = ({
                       variant="body2"
                       sx={{ fontWeight: 600, color: "success.main" }}
                     >
-                      {formatPrice(item.subtotal)}
+                      ${formatPrice(item.subtotal)}
                     </Typography>
                   </Stack>
                 </Paper>
@@ -164,7 +164,7 @@ const OrderDetail = ({
               <Stack direction="row" justifyContent="space-between">
                 <Typography variant="subtitle2">Subtotal:</Typography>
                 <Typography variant="subtitle2">
-                  {formatPrice(
+                  ${formatPrice(
                     selectedPedido.productos?.reduce(
                       (acc, i) => acc + i.price * i.quantity,
                       0
@@ -176,7 +176,7 @@ const OrderDetail = ({
               <Stack direction="row" justifyContent="space-between">
                 <Typography variant="subtitle2">Descuento:</Typography>
                 <Typography variant="subtitle2">
-                  {formatPrice(selectedPedido.descuento || 0)}
+                  ${formatPrice(selectedPedido.descuento || 0)}
                 </Typography>
               </Stack>
 
@@ -187,7 +187,7 @@ const OrderDetail = ({
               >
                 <Typography variant="h6">Total:</Typography>
                 <Typography variant="h6" color="success.main">
-                  {formatPrice(selectedPedido.total)}
+                  ${formatPrice(selectedPedido.total)}
                 </Typography>
               </Stack>
             </Stack>
@@ -218,7 +218,7 @@ const OrderDetail = ({
               <br />
               <strong>Referencia factura:</strong>{" "}
               {selectedPedido.facturaReferencia || "—"} <br />
-              <strong>Total:</strong> {formatPrice(selectedPedido.total)}
+              <strong>Total:</strong> ${formatPrice(selectedPedido.total)}
             </Typography>
           </Paper>
         ) : (
