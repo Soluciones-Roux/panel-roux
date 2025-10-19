@@ -10,10 +10,10 @@ export const formatPrice = (value) => {
   const val = new Decimal(value);
 
   return new Intl.NumberFormat("es-CO", {
-    style: "currency",
+    // style: "currency",
     currency: "COP",
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 3,
+    // minimumFractionDigits: 2,
+    // maximumFractionDigits: 3,
   }).format(val.toNumber());
 };
 
