@@ -89,7 +89,7 @@ const OrderDetail = ({
               🧾 Pedido Express
             </Typography>
 
-            <Typography variant="body2" sx={{ lineHeight: 1.6 }}>
+            <Typography variant="body2" sx={{ lineHeight: 1.6, whiteSpace: "pre-line" }}>
               {selectedPedido?.detalle_orden}
             </Typography>
 
