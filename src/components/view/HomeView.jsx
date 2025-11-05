@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 import {
   Box,
   Container,
@@ -22,6 +24,7 @@ import {
 } from "@mui/icons-material";
 import OrdersListCore from "../core/Orders/OrdersListCore";
 import UserLocationModal from "../core/UserLocationModal";
+import CreateOrderStandarCard from "../core/Orders/CreateNewOrderStandar";
 
 const HomeView = ({
   userName,
@@ -37,6 +40,8 @@ const HomeView = ({
   setOpenModalLocation,
   loading,
   locationUser,
+  openModalCreateOrder,
+  setOpenModalCreateOrder,
 }) => {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -225,7 +230,6 @@ const HomeView = ({
             </Card>
           </Grid>
 
-          {/* Estandar, pulir bien luego */}
           <Grid item xs={12} md={12}>
             <OrdersListCore
               title="Lista de pedidos Estándar"
@@ -233,10 +237,10 @@ const HomeView = ({
               color="secondary"
               showTotalKey="monto"
               isStandar={true}
+              setOpenModalCreateOrder={setOpenModalCreateOrder}
             />
           </Grid>
 
-          {/* Express, para mvp */}
           <Grid item xs={12} md={12}>
             <OrdersListCore
               title="Lista de pedidos Express"
@@ -257,8 +261,61 @@ const HomeView = ({
           locationUser={locationUser}
         />
       </Grid>
+
+      <Grid>
+        <CreateOrderStandarCard openModal={openModalCreateOrder} setOpenModal={setOpenModalCreateOrder} />
+      </Grid>
     </Container>
   );
+};
+
+HomeView.propTypes = {
+  userName: PropTypes.string.isRequired,
+  companyName: PropTypes.string.isRequired,
+
+  stats: PropTypes.shape({
+    totalVendidoHoy: PropTypes.number,
+    pedidosHoy: PropTypes.number,
+    pedidosPendientes: PropTypes.number,
+  }).isRequired,
+
+  vendedoresOnline: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+      nombre: PropTypes.string,
+      ultimaConexion: PropTypes.string,
+      ventasHoy: PropTypes.number,
+      pedidos: PropTypes.number,
+    })
+  ).isRequired,
+
+  sellersCompany: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+      nombre: PropTypes.string,
+    })
+  ),
+
+  estadosPedidos: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+      estado: PropTypes.string.isRequired,
+      cantidad: PropTypes.number.isRequired,
+      color: PropTypes.string,
+      icon: PropTypes.node,
+    })
+  ).isRequired,
+
+  pedidosEstandar: PropTypes.array,
+  pedidosExpress: PropTypes.array,
+
+  handleUserLocation: PropTypes.func.isRequired,
+  openModalLocation: PropTypes.bool.isRequired,
+  setOpenModalLocation: PropTypes.func.isRequired,
+
+  loading: PropTypes.bool,
+  locationUser: PropTypes.array,
+  openModalCreateOrder: PropTypes.bool,
 };
 
 export default HomeView;

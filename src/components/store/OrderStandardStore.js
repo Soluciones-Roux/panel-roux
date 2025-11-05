@@ -4,7 +4,6 @@ import {
   fetchMyOrderStandar,
   markCompleteOrderStandarLogic,
 } from "./logic/OrderStandarLogic";
-import { Token } from "@mui/icons-material";
 
 export class OrderStandardStore {
   myOrderStandar = [];
@@ -62,7 +61,16 @@ export class OrderStandardStore {
     const result = await markCompleteOrderStandarLogic(token, payload);
 
     if (result.success) {
-      this.getMyOrderStandar(token);
+      const result = await fetchMyOrderStandar(token);
+      runInAction(() => {
+        if (result.success) {
+          this.setOrders(result.myOrders);
+          this.recalculateTotals();
+        } else {
+          this.setError(result.error);
+        }
+        this.setLoading(false);
+      });
     }
 
     runInAction(() => {

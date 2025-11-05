@@ -38,8 +38,8 @@ const HomeViewModel = observer(() => {
     orderExpressTotal,
   } = useOrdersExpress();
 
-  const companyName = user.name_company;
-  const userName = user.username;
+  const companyName = user?.name_company;
+  const userName = user?.username;
 
   const [loading, setLoading] = useState(false);
 
@@ -83,6 +83,7 @@ const HomeViewModel = observer(() => {
       facturadoPor: order.completed_by_name,
       fechaFacturado: order.completed_at,
       facturaReferencia: order.bill_references,
+      nota: order.note,
     };
   });
 
@@ -122,27 +123,17 @@ const HomeViewModel = observer(() => {
     getStatsOnlineUsers(token);
   }, []);
 
-  const sellerLocations = [
-    {
-      latitude: 3.475058,
-      longitude: -76.481571,
-      created_at: "2025-09-26T13:47:55Z",
-    },
-    {
-      latitude: 3.476102,
-      longitude: -76.482202,
-      created_at: "2025-09-26T13:52:55Z",
-    },
-  ];
-
+  // Modal Ubicaciones
   const [openModalLocation, setOpenModalLocation] = useState(false);
-
   const handleUserLocations = async (seller) => {
     setOpenModalLocation(true);
     setLoading(true);
     await getLocationUser(token, seller.id);
     setLoading(false);
   };
+
+  //Modal Crear Pedido Web
+  const [openModalCreateOrder, setOpenModalCreateOrder] = useState(false);
 
   return (
     <HomeView
@@ -154,13 +145,14 @@ const HomeViewModel = observer(() => {
       pedidosEstandar={pedidosEstandar}
       pedidosExpress={pedidosExpress}
       sellersCompany={sellersCompany}
-      locations={sellerLocations}
       loading={loading}
       getUserLocation
       handleUserLocation={handleUserLocations}
       openModalLocation={openModalLocation}
       setOpenModalLocation={setOpenModalLocation}
       locationUser={locationUser}
+      openModalCreateOrder={openModalCreateOrder}
+      setOpenModalCreateOrder={setOpenModalCreateOrder}
     />
   );
 });

@@ -15,6 +15,7 @@ import moment from "moment";
 import { useOrdersExpress } from "../../hooks/useOrderExpress";
 import { useOrderStandar } from "../../hooks/useOrder";
 import { NumericFormat } from "react-number-format";
+import useAuth from "../../hooks/useAuth";
 
 const OrderDetail = ({
   selectedPedido,
@@ -23,8 +24,11 @@ const OrderDetail = ({
   isStandar = false,
   handleCloseModal,
 }) => {
+  const { token } = useAuth();
+
   const { markCompleteOrderExpress } = useOrdersExpress();
-  const { markCompleteOrderStandar } = useOrderStandar();
+  const { markCompleteOrderStandar, getMyOrderStandar } =
+    useOrderStandar(token);
 
   const [saveOrderCompleted, setSaveOrderCompleted] = useState({});
   const [loading, setLoading] = useState(false);
@@ -40,8 +44,13 @@ const OrderDetail = ({
     const pedido = { ...saveOrderCompleted, idOrder: selectedPedido.id };
 
     try {
+      //pedido express
       if (isExpress) await markCompleteOrderExpress(pedido);
+      //pedido estadar
       if (isStandar) await markCompleteOrderStandar(pedido);
+
+      setSaveOrderCompleted({})
+      getMyOrderStandar(token);
     } finally {
       setLoading(false);
       handleCloseModal();
@@ -89,7 +98,10 @@ const OrderDetail = ({
               🧾 Pedido Express
             </Typography>
 
-            <Typography variant="body2" sx={{ lineHeight: 1.6, whiteSpace: "pre-line" }}>
+            <Typography
+              variant="body2"
+              sx={{ lineHeight: 1.6, whiteSpace: "pre-line" }}
+            >
               {selectedPedido?.detalle_orden}
             </Typography>
 
@@ -164,7 +176,8 @@ const OrderDetail = ({
               <Stack direction="row" justifyContent="space-between">
                 <Typography variant="subtitle2">Subtotal:</Typography>
                 <Typography variant="subtitle2">
-                  ${formatPrice(
+                  $
+                  {formatPrice(
                     selectedPedido.productos?.reduce(
                       (acc, i) => acc + i.price * i.quantity,
                       0
@@ -218,7 +231,9 @@ const OrderDetail = ({
               <br />
               <strong>Referencia factura:</strong>{" "}
               {selectedPedido.facturaReferencia || "—"} <br />
-              <strong>Total:</strong> ${formatPrice(selectedPedido.total)}
+              <strong>Total:</strong> ${formatPrice(selectedPedido.total)}{" "}
+              <br />
+              <strong>Nota:</strong> {selectedPedido.nota || "-"}
             </Typography>
           </Paper>
         ) : (

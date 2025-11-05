@@ -14,7 +14,7 @@ export const createOrderStandarLogic = async (token, order) => {
       throw new Error("No response from server");
     }
 
-    if (result.status === 201) {
+    if (result.success) {
       return { success: true };
     } else {
       throw new Error(result.message || "Error create order");
