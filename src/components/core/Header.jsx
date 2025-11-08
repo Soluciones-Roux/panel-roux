@@ -26,22 +26,27 @@ import {
   Logout as LogoutIcon,
   Settings as SettingsIcon,
   Person as PersonIcon,
+  Dashboard as DashboardIcon,
+  Store as StoreIcon,
+  Assessment as AssessmentIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { authStore } from "../store/authStore";
 
 const Header = ({ onMenuToggle }) => {
   const { user, logout } = authStore;
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
+  const [anchorElHamburger, setAnchorElHamburger] = useState(null);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+    setAnchorElUser(event.currentTarget);
   };
 
   const handleMenuClose = () => {
-    setAnchorEl(null);
+    setAnchorElUser(null);
+    setAnchorElHamburger(null);
   };
 
   const handleLogoutClick = () => {
@@ -52,7 +57,6 @@ const Header = ({ onMenuToggle }) => {
   const handleLogoutConfirm = async () => {
     setLogoutDialogOpen(false);
     await logout();
-    // La redirección se maneja dentro del store
   };
 
   const handleLogoutCancel = () => {
@@ -61,12 +65,17 @@ const Header = ({ onMenuToggle }) => {
 
   const handleProfileClick = () => {
     handleMenuClose();
-    navigate("/profile"); // Redirigir a perfil
+    navigate("/profile");
   };
 
   const handleSettingsClick = () => {
     handleMenuClose();
-    navigate("/settings"); // Redirigir a configuración
+    navigate("/settings");
+  };
+
+  // Menú hamburguesa
+  const handleHamburgerClick = (event) => {
+    setAnchorElHamburger(event.currentTarget);
   };
 
   return (
@@ -82,16 +91,86 @@ const Header = ({ onMenuToggle }) => {
         }}
       >
         <Toolbar>
+          {/* Botón hamburguesa */}
           <IconButton
             edge="start"
             color="inherit"
             aria-label="open drawer"
-            onClick={onMenuToggle}
+            onClick={handleHamburgerClick}
             sx={{ mr: 2 }}
           >
             <MenuIcon />
           </IconButton>
 
+          {/* Menú contextual del hamburguesa */}
+          <Menu
+            anchorEl={anchorElHamburger}
+            open={Boolean(anchorElHamburger)}
+            onClose={handleMenuClose}
+            PaperProps={{
+              sx: {
+                width: 220,
+                mt: 1.5,
+                boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
+                border: "1px solid",
+                borderColor: "divider",
+              },
+            }}
+            transformOrigin={{ horizontal: "left", vertical: "top" }}
+            anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
+          >
+            <MenuItem
+              onClick={() => {
+                handleMenuClose();
+                navigate("/dashboard");
+              }}
+            >
+              <ListItemIcon>
+                <DashboardIcon fontSize="small" color="primary" />
+              </ListItemIcon>
+              <Typography variant="body2">Dashboard</Typography>
+            </MenuItem>
+
+            <MenuItem
+              onClick={() => {
+                handleMenuClose();
+                navigate("/orders");
+              }}
+            >
+              <ListItemIcon>
+                <StoreIcon fontSize="small" color="primary" />
+              </ListItemIcon>
+              <Typography variant="body2">Pedidos</Typography>
+            </MenuItem>
+
+            <MenuItem
+              onClick={() => {
+                handleMenuClose();
+                navigate("/reports");
+              }}
+            >
+              <ListItemIcon>
+                <AssessmentIcon fontSize="small" color="primary" />
+              </ListItemIcon>
+              <Typography variant="body2">Reportes</Typography>
+            </MenuItem>
+
+            <Divider sx={{ my: 1 }} />
+
+            <MenuItem
+              onClick={() => {
+                handleMenuClose();
+                navigate("/settings");
+              }}
+            >
+              <ListItemIcon>
+                <SettingsIcon fontSize="small" color="primary" />
+              </ListItemIcon>
+              <Typography variant="body2">Configuración</Typography>
+            </MenuItem>
+          </Menu>
+
+          {/* Nombre de empresa */}
           <Typography
             variant="h6"
             noWrap
@@ -141,8 +220,8 @@ const Header = ({ onMenuToggle }) => {
 
           {/* Menú de usuario */}
           <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
+            anchorEl={anchorElUser}
+            open={Boolean(anchorElUser)}
             onClose={handleMenuClose}
             PaperProps={{
               sx: {
