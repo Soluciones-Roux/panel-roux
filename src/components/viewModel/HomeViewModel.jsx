@@ -42,6 +42,10 @@ const HomeViewModel = observer(() => {
   const userName = user?.username;
 
   const [loading, setLoading] = useState(false);
+  const [dateFilter, setDateFilter] = useState({
+    startDate: moment().startOf("day").format("YYYY-MM-DD"),
+    endDate: moment().endOf("day").format("YYYY-MM-DD"),
+  });
 
   // Estadísticas principales
   const stats = {
@@ -117,11 +121,36 @@ const HomeViewModel = observer(() => {
     };
   });
 
+  // Función para cargar pedidos con filtro de fecha
+  const loadOrdersWithFilter = async (filterParams) => {
+    // Convertir fechas de YYYY-MM-DD a DD-MM-YYYY para el backend
+    const params = {
+      startDate: moment(filterParams.startDate).format('DD-MM-YYYY'),
+      endDate: moment(filterParams.endDate).format('DD-MM-YYYY'),
+    };
+    await getMyOrderStandar(token, params);
+    await getMyOrdersExpress(token, params);
+  };
+
   useEffect(() => {
-    getMyOrderStandar(token);
-    getMyOrdersExpress(token);
+    loadOrdersWithFilter(dateFilter);
     getStatsOnlineUsers(token);
   }, []);
+
+  // Manejadores de filtro de fecha
+  const handleFilterApply = (newFilter) => {
+    setDateFilter(newFilter);
+    loadOrdersWithFilter(newFilter);
+  };
+
+  const handleFilterClear = () => {
+    const today = {
+      startDate: moment().startOf("day").format("YYYY-MM-DD"),
+      endDate: moment().endOf("day").format("YYYY-MM-DD"),
+    };
+    setDateFilter(today);
+    loadOrdersWithFilter(today);
+  };
 
   // Modal Ubicaciones
   const [openModalLocation, setOpenModalLocation] = useState(false);
@@ -153,6 +182,9 @@ const HomeViewModel = observer(() => {
       locationUser={locationUser}
       openModalCreateOrder={openModalCreateOrder}
       setOpenModalCreateOrder={setOpenModalCreateOrder}
+      dateFilter={dateFilter}
+      onFilterApply={handleFilterApply}
+      onFilterClear={handleFilterClear}
     />
   );
 });
