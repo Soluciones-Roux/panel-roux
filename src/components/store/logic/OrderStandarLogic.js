@@ -25,11 +25,11 @@ export const createOrderStandarLogic = async (token, order) => {
   }
 };
 
-export const fetchMyOrderStandar = async (token) => {
+export const fetchMyOrderStandar = async (token, params = {}) => {
   try {
     if (!token) throw new Error("No Auth Token Send");
 
-    const result = await fetchMyOrdersStandarService(token);
+    const result = await fetchMyOrdersStandarService(token, params);
 
     if (!result) {
       throw new Error("No response from server");

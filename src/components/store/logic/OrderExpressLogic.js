@@ -3,11 +3,11 @@ import {
   markCompleteOrderExpressService,
 } from "../../services/OrderExpressService";
 
-export const fetchMyOrdersExpressLogic = async (token) => {
+export const fetchMyOrdersExpressLogic = async (token, params = {}) => {
   try {
     if (!token) throw new Error("No Auth Token Send");
 
-    const result = await fetchMyOrdersExpressService(token);
+    const result = await fetchMyOrdersExpressService(token, params);
 
     if (!result) {
       throw new Error("No response from server");

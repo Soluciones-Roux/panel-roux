@@ -20,11 +20,11 @@ export class OrderStandardStore {
   // ==========================
   //   FETCH STANDARD ORDERS
   // ==========================
-  async getMyOrderStandar(token) {
+  async getMyOrderStandar(token, params = {}) {
     this.setLoading(true);
     this.clearError();
 
-    const result = await fetchMyOrderStandar(token);
+    const result = await fetchMyOrderStandar(token, params);
 
     runInAction(() => {
       if (result.success) {
@@ -54,14 +54,14 @@ export class OrderStandardStore {
     return result.success;
   }
 
-  async markCompleteOrderStandar(token, payload) {
+  async markCompleteOrderStandar(token, payload, params = {}) {
     this.setLoading(true);
     this.clearError();
 
     const result = await markCompleteOrderStandarLogic(token, payload);
 
     if (result.success) {
-      const result = await fetchMyOrderStandar(token);
+      const result = await fetchMyOrderStandar(token, params);
       runInAction(() => {
         if (result.success) {
           this.setOrders(result.myOrders);

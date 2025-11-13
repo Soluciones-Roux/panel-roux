@@ -19,11 +19,11 @@ export class OrderExpress {
   // ==========================
   //   FETCH EXPRESS ORDERS
   // ==========================
-  async getMyOrdersExpress(token) {
+  async getMyOrdersExpress(token, params = {}) {
     this.setLoading(true);
     this.clearError();
 
-    const result = await fetchMyOrdersExpressLogic(token);
+    const result = await fetchMyOrdersExpressLogic(token, params);
 
     runInAction(() => {
       if (result.success) {

@@ -15,13 +15,14 @@ export const createOrderStandarService = async (token, order) => {
   return data;
 };
 
-export const fetchMyOrdersStandarService = async (token) => {
+export const fetchMyOrdersStandarService = async (token, params = {}) => {
   if (!token) return console.log("No Auth Token Send");
   const data = await fetchPrivate(
     `${apiHost}${privateAPI}${ordersAPI}/my-orders-web`,
     token,
     {
       method: "GET",
+      params: params, // Agregar parámetros de fecha
     }
   );
 

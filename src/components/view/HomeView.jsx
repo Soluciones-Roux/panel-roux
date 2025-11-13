@@ -25,6 +25,7 @@ import {
 import OrdersListCore from "../core/Orders/OrdersListCore";
 import UserLocationModal from "../core/UserLocationModal";
 import CreateOrderStandarCard from "../core/Orders/CreateNewOrderStandar";
+import DateRangeFilter from "../core/DateRangeFilter";
 
 const HomeView = ({
   userName,
@@ -42,6 +43,9 @@ const HomeView = ({
   locationUser,
   openModalCreateOrder,
   setOpenModalCreateOrder,
+  dateFilter,
+  onFilterApply,
+  onFilterClear,
 }) => {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -57,6 +61,12 @@ const HomeView = ({
           Resumen de actividades del día
         </Typography>
       </Box>
+
+      {/* Filtro de fechas */}
+      <DateRangeFilter
+        onFilterApply={onFilterApply}
+        onFilterClear={onFilterClear}
+      />
 
       <Grid container spacing={3}>
         {/* Tarjeta de ventas del día */}
@@ -316,6 +326,14 @@ HomeView.propTypes = {
   loading: PropTypes.bool,
   locationUser: PropTypes.array,
   openModalCreateOrder: PropTypes.bool,
+  setOpenModalCreateOrder: PropTypes.func,
+  
+  dateFilter: PropTypes.shape({
+    startDate: PropTypes.string,
+    endDate: PropTypes.string,
+  }),
+  onFilterApply: PropTypes.func.isRequired,
+  onFilterClear: PropTypes.func.isRequired,
 };
 
 export default HomeView;
